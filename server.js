@@ -1,13 +1,13 @@
 const inquirer = require('inquirer');
-const consoleTable = require('console.table');
-const express = require('express');
-const db = require('./db/db.json');
+// const consoleTable = require('console.table');
+// const express = require('express');
+// const db = require('./db/db.json');
 
 const PORT = process.env.PORT || 3001;
-const app = express();
+// const app = express();
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+// app.use(express.urlencoded({ extended: false }));
+// app.use(express.json());
 
 function mainPrompts() {
     inquirer.prompt([
@@ -20,6 +20,30 @@ function mainPrompts() {
                     name: "View All Employees", 
                     value: "View_Employees"
                 },
+                {
+                    name: "Add Employee", 
+                    value: "Add_Employee"
+                },
+                {
+                    name: "Update Employee Role", 
+                    value: "Update_Employee_Role"
+                },
+                {
+                    name: "View All Roles",
+                    value: "View_All"
+                },
+                {
+                    name: "Add Role",
+                    value: "Add_Role"
+                },
+                {
+                    name: "View All Departments",
+                    value: "View_All_Departments"
+                },
+                {
+                    name: "Add Department", 
+                    value: "Add_Department"
+                }
             ]
 
         }
@@ -27,7 +51,7 @@ function mainPrompts() {
 }
 
 
-
+mainPrompts();
 
 
 
