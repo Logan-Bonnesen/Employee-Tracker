@@ -26,6 +26,9 @@ N/A
 ## License
 This application is licensed by Mozilla.
 
+## Walkthrough Video
+[Screencastify Walkthrough Video](https://watch.screencastify.com/v/j5ZP6OiI8kEQgtlrfIrf)
+
 ## Questions
 For any questions you can reach me at my email: Lbonnesen@gmail.com
 or find me on GitHub: https://github.com/Logan-Bonnesen
