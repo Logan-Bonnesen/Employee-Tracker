@@ -2,7 +2,7 @@ const inquirer = require('inquirer');
 const consoleTable = require('console.table');
 // const db = require('./db/db.json');
 const mysql = require('mysql2');
-
+require('dotenv').config();
 
 // Connecting to database
 const connectToDb = mysql.createConnection(
@@ -45,7 +45,7 @@ function startPrompts() {
         } else if (data.choice === "Add Role") {
             addRole()
         } else if (data.choice === "Quit") {
-            console.log("Leaving app")
+            console.log("Leaving Application")
             connectToDb.end()
         }
     })
@@ -132,7 +132,11 @@ const updateEmployeeRole = () => {
 }
 
 const viewAllDepartments = () => {
-    // connectToDb.query()
+    connectToDb.query('SELECT * FROM department', function (err, res) {
+        if(err) throw err;
+        console.table(res);
+        startPrompts();
+    })
 }
 
 const addDepartment = () => {
@@ -155,32 +159,19 @@ const addDepartment = () => {
 })}
 
 const viewAllRoles = () => {
-    // connectToDb.query()
+    connectToDb.query('SELECT * FROM employee', function (err, res) {
+        if(err) throw err;
+        console.table(res);
+        startPrompts();
+    })
 }
 
 const addRole = () => {
     // connectToDb.query()
 }
 
-const deptLegal = () => {
-    // connectToDb.query()
-}
-
-const deptSupplyChain = () => {
-    // connectToDb.query()
-}
-
-const deptCustomerService = () => {
-    // connectToDb.query()
-}
-
-
-
 // startPrompts();
 // connectToDb();
 
 
 
-// app.listen(PORT, () => {
-//     console.log(`Server listening on port ${PORT}`)
-// })
