@@ -3,6 +3,7 @@ const consoleTable = require('console.table');
 const express = require('express');
 // const db = require('./db/db.json');
 const mysql = require('mysql2');
+const { connect } = require('http2');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -30,19 +31,19 @@ function startPrompts() {
             choices: ["View All Employees", "Add Employee", "Update Employee Role", "View All Departments", "Add Department", "View All Roles", "Add Role", "Quit"]
         }
     ).then(function (data) {
-        if (data.list === "View All Employees") {
+        if (data.choice === "View All Employees") {
             viewAllEmployees();
-        } else if (data.list === "Add Employee") {
+        } else if (data.choice === "Add Employee") {
             addEmployees();
-        } else if (data.list === "Update Employee Role") {
+        } else if (data.choice === "Update Employee Role") {
             updateEmployeeRole();
-        } else if (data.list === "View All Departments") {
+        } else if (data.choice === "View All Departments") {
             viewAllDepartments();
-        } else if (data.list === "Add Department") {
+        } else if (data.choice === "Add Department") {
             addDepartment();
-        } else if (data.list === "View All Roles") {
+        } else if (data.choice === "View All Roles") {
             viewAllRoles();
-        } else if (data.list === "Add Role") {
+        } else if (data.choice === "Add Role") {
             addRole()
         } else questionPrompts()
     })
@@ -65,7 +66,21 @@ const viewAllDepartments = () => {
 }
 
 const addDepartment = () => {
-    connectToDb.query()
+    inquirer.prompt({
+        type: "list",
+        name: "dept",
+        message: "Which department do you want to add?",
+        choices: ["Legal, Supply Chain, Customer Service"]
+    
+    }).then(function (data) {
+        if(data.dept === "Legal") {
+            deptLegal()
+        } else if (data.dept === "Supply Chain"){
+            deptSupplyChain()
+        } else {
+            deptCustomerService()
+        }
+    })
 }
 
 const viewAllRoles = () => {
@@ -76,6 +91,18 @@ const addRole = () => {
     connectToDb.query()
 }
 
+const deptLegal = () => {
+    connectToDb.query()
+}
+
+const deptSupplyChain = () => {
+    connectToDb.query()
+}
+
+const deptCustomerService = () => {
+    connectToDb.query()
+}
+
 
 
 startPrompts();
@@ -83,6 +110,6 @@ connectToDb();
 
 
 
-app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`)
-})
+// app.listen(PORT, () => {
+//     console.log(`Server listening on port ${PORT}`)
+// })
