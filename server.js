@@ -8,9 +8,9 @@ require('dotenv').config();
 const connectToDb = mysql.createConnection(
     {
         host: 'localhost',
-        user: 'root',
-        password: 'PassWord1',
-        database: 'employeeTracker_db'
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
     },
     console.log('Now connected to employeeTracker_db')
 );
@@ -78,6 +78,11 @@ const addEmployees = () => {
                 name: "role_id",
                 message: "Please select the role for new employee.",
                 choices: res.map(role => role.title)
+            },
+            {
+                name: "manager_name",
+                type: "input",
+                message: "Who is the manager of this employee?"
             }
         ]).then(function (data){
             const roleTitle = res.find(role => role.title === data.role_id)
@@ -159,7 +164,7 @@ const addDepartment = () => {
 })}
 
 const viewAllRoles = () => {
-    connectToDb.query('SELECT * FROM employee', function (err, res) {
+    connectToDb.query('SELECT * FROM role', function (err, res) {
         if(err) throw err;
         console.table(res);
         startPrompts();
@@ -167,8 +172,36 @@ const viewAllRoles = () => {
 }
 
 const addRole = () => {
-    // connectToDb.query()
-}
+    inquirer.prompt({
+        type: "input",
+        name: "title",
+        message: "Which role do you want to add?"
+
+    
+    },{
+        type: "input", 
+        name: "salary",
+        message: "What is the salary of this new role?"
+    
+    }, {
+        type: "list",
+        name: "department_id", 
+        message: "What is the department ID for this new role?",
+        choices: ["1", "2", "3", "4"]
+
+    }).then(function (data){
+        
+        connectToDb.query('INSERT INTO role SET ?', {
+            title: data.title,
+            salary: data.salary,
+            department_id: data.department_id
+        },
+        function (err, res) {if (err) throw err
+        console.log("New Role Added")
+        startPrompts()
+    }
+        )
+})}
 
 // startPrompts();
 // connectToDb();
