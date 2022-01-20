@@ -1,15 +1,8 @@
 const inquirer = require('inquirer');
 const consoleTable = require('console.table');
-const express = require('express');
 // const db = require('./db/db.json');
 const mysql = require('mysql2');
-const { connect } = require('http2');
 
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
 
 // Connecting to database
 const connectToDb = mysql.createConnection(
@@ -21,6 +14,12 @@ const connectToDb = mysql.createConnection(
     },
     console.log('Now connected to employeeTracker_db')
 );
+connectToDb.connect(function (err){
+    if(err) throw err
+
+startPrompts();
+
+});
 
 function startPrompts() {
     inquirer.prompt(
@@ -45,68 +44,140 @@ function startPrompts() {
             viewAllRoles();
         } else if (data.choice === "Add Role") {
             addRole()
-        } else questionPrompts()
+        } else if (data.choice === "Quit") {
+            console.log("Leaving app")
+            connectToDb.end()
+        }
     })
 }
         
 const viewAllEmployees = () => {
-    connectToDb.query()
+    connectToDb.query('SELECT * FROM employee', function (err, res) {
+        if(err) throw err;
+        console.table(res);
+        startPrompts();
+    })
 }
 
 const addEmployees = () => {
-    connectToDb.query()
+    connectToDb.query('SELECT * FROM role', function (err, res){
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: "first_name",
+                type: 'input',
+                message: "What is the employee's first name?"
+            },
+            {
+                name: "last_name",
+                type: "input",
+                message: "What is the employee's last name?"
+            },
+            {
+                type: "list",
+                name: "role_id",
+                message: "Please select the role for new employee.",
+                choices: res.map(role => role.title)
+            }
+        ]).then(function (data){
+            const roleTitle = res.find(role => role.title === data.role_id)
+            connectToDb.query('INSERT INTO employee SET ?', { 
+                first_name: data.first_name,
+                last_name: data.last_name,
+                role_id: roleTitle.id
+            },
+            function (err, res) {if (err) throw err
+            console.log("New Employee Added.");
+            startPrompts();
+            }
+            )
+        })
+    })
 }
 
 const updateEmployeeRole = () => {
-    connectToDb.query()
+     connectToDb.query('SELECT * FROM employee',function (err, res){
+         if(err) throw err
+         inquirer.prompt([
+             {
+                 type: "list",
+                 name: "employeeName", 
+                 message: "Select employee to update role",
+                 choices: res.map(employee => employee.first_name)
+             }
+         ]).then(function (data){
+             const selectedEmployee = data.employeeName
+            connectToDb.query('SELECT * FROM role', function (err, res){
+                if(err) throw err
+                inquirer.prompt([
+                    {
+                        type: "list",
+                        name: "newRole_id",
+                        message: "Please select the role for new employee.",
+                        choices: res.map(role => role.title)
+                    }
+                ]).then(function (data){
+                    const updatedRole = res.find(role => role.title === data.newRole_id)
+                    connectToDb.query('UPDATE employee SET ? WHERE first_name =' + '"' + selectedEmployee + '"', {
+                        role_id: updatedRole.id
+                    }, function (err, res) {if (err) throw err
+                    console.log('Employee Role Updated.')
+                startPrompts()
+            })
+                })
+            } )
+
+         })
+     } )
 }
 
 const viewAllDepartments = () => {
-    connectToDb.query()
+    // connectToDb.query()
 }
 
 const addDepartment = () => {
     inquirer.prompt({
-        type: "list",
+        type: "input",
         name: "dept",
         message: "Which department do you want to add?",
-        choices: ["Legal, Supply Chain, Customer Service"]
+
     
-    }).then(function (data) {
-        if(data.dept === "Legal") {
-            deptLegal()
-        } else if (data.dept === "Supply Chain"){
-            deptSupplyChain()
-        } else {
-            deptCustomerService()
-        }
-    })
-}
+    }).then(function (data){
+        
+        connectToDb.query('INSERT INTO department SET ?', {
+            name: data.dept
+        },
+        function (err, res) {if (err) throw err
+        console.log("New Department Added")
+        startPrompts()
+    }
+        )
+})}
 
 const viewAllRoles = () => {
-    connectToDb.query()
+    // connectToDb.query()
 }
 
 const addRole = () => {
-    connectToDb.query()
+    // connectToDb.query()
 }
 
 const deptLegal = () => {
-    connectToDb.query()
+    // connectToDb.query()
 }
 
 const deptSupplyChain = () => {
-    connectToDb.query()
+    // connectToDb.query()
 }
 
 const deptCustomerService = () => {
-    connectToDb.query()
+    // connectToDb.query()
 }
 
 
 
-startPrompts();
-connectToDb();
+// startPrompts();
+// connectToDb();
 
 
 
