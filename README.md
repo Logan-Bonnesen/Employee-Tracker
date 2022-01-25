@@ -1,4 +1,4 @@
-# Team Profile Generator
+# Employee Tracker
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)  
 ## Description 
 Developers frequently have to create interfaces that allow non-developers to easily view and interact with information stored in databases. These interfaces are called content management systems (CMS). This is a command-line application that manages a company's employee database, using Node.js, Inquirer, and MySQL.
